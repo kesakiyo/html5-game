@@ -1,12 +1,3 @@
-const getRandomColor = function() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i += 1) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
 const draw = (function () {
 	var canvas = document.getElementById('myCanvas');
 	var ctx = canvas.getContext('2d');
@@ -18,8 +9,6 @@ const draw = (function () {
 	var rightPressed = false;
 
 	var ballRadius = 10;
-	var ballColor = getRandomColor();
-
 	var x = canvas.width / 2;
 	var y = canvas.height - 30;
 	var dx = 2;
@@ -40,10 +29,10 @@ const draw = (function () {
 		}
 	}, false);
 
-	const drawBall = function(ctx, color, radius, x, y) {
+	const drawBall = function(ctx, radius, x, y) {
 		ctx.beginPath();
 		ctx.arc(x, y, radius, 0, Math.PI * 2);
-		ctx.fillStyle = color;
+		ctx.fillStyle = '#0095DD';
 		ctx.fill();
 		ctx.closePath();
 	}
@@ -58,17 +47,21 @@ const draw = (function () {
 
 	return function() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		drawBall(ctx, ballColor, ballRadius, x, y);
+		drawBall(ctx, ballRadius, x, y);
 		drawPaddle(ctx, paddleX, canvas.height - paddleHeight);
 
-		if (y + dy < ballRadius || y + dy > canvas.height - ballRadius) {
-			dy = -dy;
-			ballColor = getRandomColor();			
+		if (y + dy < ballRadius) {
+			dy = -dy;		
+		} else if (y + dy > canvas.height - ballRadius) {
+			if (paddleX < x && x < paddleX + paddleWidth) {
+				dy = -dy;
+			} else {
+				alert("GAME OVER");
+				document.location.reload();
+			}
 		}
 		if (x + dx < ballRadius || x + dx > canvas.width - ballRadius) {
 			dx = -dx;
-			changedDirection = true;
-			ballColor = getRandomColor();
 		}
 
 		x += dx;
