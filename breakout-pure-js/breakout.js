@@ -32,6 +32,8 @@ const draw = (function () {
 	var dx = 2;
 	var dy = -2;
 
+	var score = 0;
+
 	document.addEventListener('keydown', function(e) {
 		if (e.keyCode === 39) {
 			rightPressed = true;
@@ -92,14 +94,22 @@ const draw = (function () {
 				if (b.status === 1 && x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
 					dy = -dy;
 					b.status = 0;
+					score += 1;
 				}
 			}
 		}
 	}
 
+	const drawScore = function(ctx) {
+		ctx.font = '16px Arial';
+		ctx.fillStyle = '#0095DD';
+		ctx.fillText('Score: ' + score, 8, 20);
+	}
+
 	return function() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		collisionDetection();
+		drawScore(ctx);
 		drawBricks(ctx);
 		drawBall(ctx, ballRadius, x, y);
 		drawPaddle(ctx, paddleX, canvas.height - paddleHeight);
