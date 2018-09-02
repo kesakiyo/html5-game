@@ -14,7 +14,7 @@ const draw = (function () {
 		for (var i = 0; i < brickColumnCount; i += 1) {
 			ret[i] = [];
 			for (var j = 0; j < brickRowCount; j += 1) {
-				ret[i][j] = { x: 0, y : 0 };
+				ret[i][j] = { x: 0, y: 0, status: 1, };
 			}
 		}
 		return ret;
@@ -66,10 +66,16 @@ const draw = (function () {
 	const drawBricks = function(ctx) {
 		for (var i = 0; i < brickColumnCount; i += 1) {
 			for (var j = 0; j < brickRowCount; j += 1) {
-				bricks[i][j] = {
-					x: i * (brickWidth + brickPadding) + brickOffsetLeft,
-					y: j * (brickHeight + brickPadding) + brickOffsetTop,
-				};
+				if (bricks[i][j].status !== 1) {
+					continue;
+				}
+				bricks[i][j] = Object.assign(
+					bricks[i][j],
+					{
+						x: i * (brickWidth + brickPadding) + brickOffsetLeft,
+						y: j * (brickHeight + brickPadding) + brickOffsetTop,
+					},
+				);
 				ctx.beginPath();
 				ctx.rect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
 				ctx.fillStyle = '#0095DD';
@@ -79,8 +85,21 @@ const draw = (function () {
 		}
 	}
 
+	const collisionDetection = function() {
+		for (var i = 0; i < brickColumnCount; i += 1) {
+			for (var j = 0; j < brickRowCount; j += 1) {
+				var b = bricks[i][j];
+				if (b.status === 1 && x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+					dy = -dy;
+					b.status = 0;
+				}
+			}
+		}
+	}
+
 	return function() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		collisionDetection();
 		drawBricks(ctx);
 		drawBall(ctx, ballRadius, x, y);
 		drawPaddle(ctx, paddleX, canvas.height - paddleHeight);
