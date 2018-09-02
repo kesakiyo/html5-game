@@ -80,7 +80,7 @@ const draw = (function () {
 				ctx.rect(bricks[i][j].x, bricks[i][j].y, brickWidth, brickHeight);
 				ctx.fillStyle = '#0095DD';
 				ctx.fill();
-				ctx.closePath();
+				ctx.closePath()
 			}
 		}
 	}
