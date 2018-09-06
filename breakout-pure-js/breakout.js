@@ -48,6 +48,12 @@ const draw = (function () {
 			leftPressed = false;
 		}
 	}, false);
+	document.addEventListener('mousemove', function(e) {
+		var relativeX = e.clientX - canvas.offsetLeft;
+		if (0 < relativeX && relativeX < canvas.width) {
+			paddleX = relativeX - paddleWidth / 2;
+		}
+	}, false);
 
 	const drawBall = function(ctx, radius, x, y) {
 		ctx.beginPath();
