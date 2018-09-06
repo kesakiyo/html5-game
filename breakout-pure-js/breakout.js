@@ -32,6 +32,7 @@ const draw = (function () {
 	var dx = 2;
 	var dy = -2;
 
+	var lives = 3;
 	var score = 0;
 
 	document.addEventListener('keydown', function(e) {
@@ -112,10 +113,17 @@ const draw = (function () {
 		ctx.fillText('Score: ' + score, 8, 20);
 	}
 
+	const draseLives = function(ctx) {
+		ctx.font = '16px Arial';
+		ctx.fillStyle = '#0095DD';
+		ctx.fillText('Lives: ' + lives, canvas.width - 65, 20);
+	}
+
 	return function() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		collisionDetection();
 		drawScore(ctx);
+		draseLives(ctx);
 		drawBricks(ctx);
 		drawBall(ctx, ballRadius, x, y);
 		drawPaddle(ctx, paddleX, canvas.height - paddleHeight);
@@ -126,8 +134,17 @@ const draw = (function () {
 			if (paddleX < x && x < paddleX + paddleWidth) {
 				dy = -dy;
 			} else {
-				alert("GAME OVER");
-				document.location.reload();
+				--lives;
+				if (!lives) {
+					alert("GAME OVER");
+					document.location.reload();
+				} else {
+					x = canvas.width / 2;
+					y = canvas.height - 30;
+					dx = 2;
+					dy = -2;
+					paddleX = (canvas.width - paddleWidth) / 2;
+				}
 			}
 		}
 		if (x + dx < ballRadius || x + dx > canvas.width - ballRadius) {
